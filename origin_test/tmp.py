@@ -1,4 +1,4 @@
-import random
+import random,math
 
 def gen_random_wifi_feature():
 	out = open('only_wifi.txt','w')
@@ -34,12 +34,39 @@ def mix():
 	out.close()
 	return
 
+def __d(a,b):
+	l=len(a)
+	r = 0
+	for i in range(l):
+		r=r+(a[i]-b[i])**2
+	return math.sqrt(r)
+
 def gaoshi():
 	f = open('only_caffe.txt')
-	out = open('test.txt','w')
+	g1,g2,c = [],[],0
 	for line in f:
-		out.write('%d%s'%(random.randint(1,3),line[1:]))
-	out.close()
+		if c==20:
+			break
+		g=[]
+		words=line[:-1].split(' ')
+		for w in words[1:]:
+			ww=float(w.split(':')[1])
+			g.append(ww)
+		if c<10:
+			g1.append(g)
+		else:
+			g2.append(g)
+		c=c+1
+	print 'in group'
+	for i in range(10):
+		for j in range(10):
+			if j>i:
+				print __d(g1[i],g1[j])
+	print 'between group'
+	for i in range(10):
+		for j in range(10):
+			if j>i:
+				print __d(g1[i],g2[j])
 	f.close()
 
 if __name__ == '__main__':

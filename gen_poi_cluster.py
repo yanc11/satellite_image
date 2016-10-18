@@ -65,7 +65,7 @@ def select_ap():
 	f.close()
 	out.close()
 
-def cluster_alg(dic, name):#dic[i]:[bssid, No., lon, lat, times, p, deta...]
+def cluster_alg(dic, name):#dic[i]:[bssid, No., lon, lat, times, p, deta, cluster_id...]
 	fdic = {'1':'办公','2':'农业','7':'机场','13':'住宅','16':'大学','18':'公园','21':'餐厅'}
 	print 'processing ',fdic[name]
 	l = len(dic)
@@ -89,18 +89,24 @@ def cluster_alg(dic, name):#dic[i]:[bssid, No., lon, lat, times, p, deta...]
 	print 'computing deta...'
 	for i in range(l):
 		if i==0:
-			dic[0].append(0)
+			dic[0].append(0)#deta
+			dic[0].append(0)#cluster_id
 			continue
 		deta=10000
+		cid = 0
 		for j in range(l):
 			if j>=i:
 				break
-			deta=min(deta,d[dic[i][1]][dic[j][1]])
+			#deta=min(deta,d[dic[i][1]][dic[j][1]])
+			if d[dic[i][1]][dic[j][1]]<deta:
+				deta=d[dic[i][1]][dic[j][1]]
+				cid=j
 		dic[i].append(deta)
+		dic[i].append(cid)
 		dic[0][6]=max(dic[0][6],deta)
 	out=codecs.open('result/p_deta_%s.txt'%name,'w',encoding='UTF-8')
 	for i in range(l):
-		out.write('%s|%f|%f|%d|%f|%f\n'%(dic[i][0],dic[i][2],dic[i][3],dic[i][4],dic[i][5],dic[i][6]))
+		out.write('%s|%f|%f|%d|%f|%f|%d\n'%(dic[i][0],dic[i][2],dic[i][3],dic[i][4],dic[i][5],dic[i][6],dic[i][7]))
 	out.close()
 
 def clustering():
@@ -125,8 +131,30 @@ def clustering():
 				_input[i][1]=i
 		cluster_alg(_input, key)
 
+def gen_center():
+	fdic = {'1':'办公','2':'农业','7':'机场','13':'住宅','16':'大学','18':'公园','21':'餐厅'}
+	threshold = 0.01
+	out = codecs.open('result/bssid2cid.txt','w',encoding='UTF-8')
+	gps = codecs.open('result/cid2gps.txt','w',encoding='UTF-8')
+	for key in fdic:
+		f = codecs.open('result/p_deta_%s.txt'%key,encoding='UTF-8')
+		lc,belong = 0,[]
+		for line in f:
+			words = line[:-1].split('|')
+			if float(words[5])>threshold:
+				belong.append(lc)
+				gps.write('%s %s,%s\n'%(key+'_'+str(lc),words[2],words[1]))
+			else:
+				belong.append(belong[int(words[6])])
+			out.write('%s %s\n'%(words[0],key+'_'+str(belong[lc])))
+			lc=lc+1
+		f.close()
+	out.close()
+	gps.close()
+
 if __name__ == '__main__':
 	#list_all_class()
 	#gen_mergeclass_label()
 	#select_ap()
-	clustering()
+	#clustering()
+	gen_center()
