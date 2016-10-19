@@ -33,8 +33,8 @@ def svm_test(xj,yj):
     print("Confusion matrix:\n%s" % metrics.confusion_matrix(expected, predicted))
 
 if __name__ == '__main__':
-    #xj,yj = load_svmlight_file("only_wifi.txt")
-    xj,yj = load_svmlight_file("only_caffe_mean.txt")
+    xj,yj = load_svmlight_file("only_wifi.txt")
+    #xj,yj = load_svmlight_file("only_caffe_mean.txt")
     #xj,yj = load_svmlight_file("mixed.txt")
     bdt_test(xj,yj)
     svm_test(xj,yj)
