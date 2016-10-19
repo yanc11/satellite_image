@@ -132,11 +132,14 @@ def clustering():
 		cluster_alg(_input, key)
 
 def gen_center():
-	fdic = {'1':'办公','2':'农业','7':'机场','13':'住宅','16':'大学','18':'公园','21':'餐厅'}
+	fdic = {'1':9999,'2':2937,'13':9999,'16':9999,'18':5095,'21':4086,'7':1840}
 	threshold = 0.01
+	rate = 1
 	out = codecs.open('result/bssid2cid.txt','w',encoding='UTF-8')
 	gps = codecs.open('result/cid2gps.txt','w',encoding='UTF-8')
 	for key in fdic:
+		if key=='7':
+			threshold = 0.0015
 		f = codecs.open('result/p_deta_%s.txt'%key,encoding='UTF-8')
 		lc,belong = 0,[]
 		for line in f:
@@ -148,6 +151,8 @@ def gen_center():
 				belong.append(belong[int(words[6])])
 			out.write('%s %s\n'%(words[0],key+'_'+str(belong[lc])))
 			lc=lc+1
+			if lc>rate*fdic[key]:
+				break
 		f.close()
 	out.close()
 	gps.close()
