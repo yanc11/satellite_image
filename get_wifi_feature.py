@@ -1,18 +1,18 @@
 # -*- coding: utf-8 -*-
 import codecs,math
 
-def get_features():
+def get_features(path):
 	start=1430582400#15-5-3
 	weekend={'0':0,'6':0,'7':0}
 	fdic={'1':1,'2':2,'13':3,'16':4,'18':5,'21':6,'7':7}#need modify
-	out=codecs.open('7class_test/only_wifi.txt','w',encoding='UTF-8')
+	out=codecs.open(path+'only_wifi.txt','w',encoding='UTF-8')
 	cluster,bssid2cid = {},{}
-	f=codecs.open('result/cid2gps.txt',encoding='UTF-8')
+	f=codecs.open(path+'cid2gps.txt',encoding='UTF-8')
 	for line in f:
 		words=line.split(' ')
 		cluster[words[0]] = {'conperhour':[0 for i in range(24)],'conperday':[0,0]}
 	f.close()
-	f=codecs.open('result/bssid2cid.txt',encoding='UTF-8')
+	f=codecs.open(path+'bssid2cid.txt',encoding='UTF-8')
 	for line in f:
 		words=line[:-1].split(' ')
 		bssid2cid[words[0]]=words[1]
@@ -39,14 +39,15 @@ def get_features():
 		cluster[cid]['conperday'][daytype]=cluster[cid]['conperday'][daytype]+1
 	f.close()
 	bad_points={}
-	f=codecs.open('7class_test/bad_points.txt',encoding='UTF-8')
+	f=codecs.open(path+'bad_points.txt',encoding='UTF-8')
 	for line in f:
 		bad_points[line[:-1]]=''
 	f.close()
 	for cid in cluster:
 		if bad_points.has_key(cid):
 			continue
-		out.write('%d'%(fdic[cid.split('_')[0]]))
+		#out.write('%d'%(fdic[cid.split('_')[0]]))#need_modify
+		out.write(cid.split('_')[0])
 		fe_c=1
 		s=sum(cluster[cid]['conperhour'])
 		for fe in cluster[cid]['conperhour']:
@@ -60,4 +61,4 @@ def get_features():
 	out.close()
 
 if __name__ == '__main__':
-	get_features()
+	get_features('4class_test/')
