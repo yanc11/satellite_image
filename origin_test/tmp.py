@@ -70,4 +70,4 @@ def gaoshi():
 	f.close()
 
 if __name__ == '__main__':
-	gaoshi()
+	mix()

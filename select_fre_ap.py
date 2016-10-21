@@ -48,5 +48,5 @@ def select_4_class():
 	out2.close()
 
 if __name__ == '__main__':
-	#select_fre_ap()
+	select_fre_ap()
 	select_4_class()
