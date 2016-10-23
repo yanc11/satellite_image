@@ -4,7 +4,7 @@ import codecs,math
 def get_features(path):
 	start=1430582400#15-5-3
 	weekend={'0':0,'6':0,'7':0}
-	fdic={'1':1,'2':2,'13':3,'16':4,'18':5,'21':6,'7':7}#need modify
+	fdic={'1':1,'2':2,'13':3,'18':4,'21':5,'7':6}#need modify
 	out=codecs.open(path+'only_wifi.txt','w',encoding='UTF-8')
 	cluster,bssid2cid = {},{}
 	f=codecs.open(path+'cid2gps.txt',encoding='UTF-8')
@@ -51,12 +51,12 @@ def get_features(path):
 		else:
 			cluster[cid]['ulist'][-1][uid].append(ts)
 		if not udic.has_key(uid):
-			udic[uid]={'bssidcount':{bssid:1},'lasttime':ts,'lastbssid':bssid,'movetime':[]}
+			udic[uid]={'bssidcount':{cid:1},'lasttime':ts,'lastbssid':cid,'movetime':[]}
 		else:
 			if bssid!=udic[uid]['lastbssid']:
-				udic[uid]['bssidcount'][bssid]=1
+				udic[uid]['bssidcount'][cid]=1
 				udic[uid]['movetime'].append(ts-udic[uid]['lasttime'])
-				udic[uid]['lastbssid']=bssid
+				udic[uid]['lastbssid']=cid
 			udic[uid]['lasttime']=ts
 	f.close()
 	bad_points={}
@@ -67,8 +67,10 @@ def get_features(path):
 	for cid in sorted(cluster.keys()):
 		if bad_points.has_key(cid):
 			continue
-		#out.write('%d'%(fdic[cid.split('_')[0]]))#need_modify
-		out.write(cid.split('_')[0])
+		if not fdic.has_key(cid.split('_')[0]):
+			continue
+		out.write('%d'%(fdic[cid.split('_')[0]]))#need_modify
+		#out.write(cid.split('_')[0])
 		fe_c=1
 		s=sum(cluster[cid]['conperhour'])
 		for fe in cluster[cid]['conperhour']:
@@ -123,7 +125,10 @@ def get_features(path):
 			crs=crs+cr
 			crc=crc+1
 			lastulist=ulist
-		out.write(' %d:%f'%(fe_c,crs/crc))
+		if crc!=0:
+			out.write(' %d:%f'%(fe_c,crs/crc))
+		else:
+			out.write(' %d:%f'%(fe_c,1.0))
 		fe_c=fe_c+1
 		for i in range(3):
 			out.write(' %d:%d'%(fe_c,len(usercount[i])))
@@ -154,4 +159,4 @@ def get_features(path):
 	out.close()
 
 if __name__ == '__main__':
-	get_features('4class_test/')
+	get_features('7class_test/')
