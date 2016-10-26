@@ -19,7 +19,7 @@ def get_features(path):
 	f.close()
 	_c=0
 	udic={}
-	f=codecs.open('../data_beijing_modified',encoding='UTF-8')
+	f=codecs.open('../data_beijing_modified_cluster',encoding='UTF-8')
 	for line in f:
 		_c=_c+1
 		if _c%100000==0:

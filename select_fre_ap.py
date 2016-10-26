@@ -17,22 +17,24 @@ def select_fre_ap():
 	fd.close()
 	print 'total:',len(dic)
 	c,c5=0,0
-	out = codecs.open('fre_ap.txt','w',encoding='UTF-8')
+	out = codecs.open('manual_pic/fre_ap.txt','w',encoding='UTF-8')
 	for i in dic:
-		if dic[i]['c']>=200:
+		if dic[i]['c']>=100:
 			out.write(dic[i]['l'])
 			c=c+1
-		if dic[i]['c']>=100:
+		if dic[i]['c']>=50:
 			c5=c5+1
 	out.close()
-	print '>=200:',c
-	print '>=100',c5
+	print '>=100:',c
+	print '>=50',c5
 
 def select_4_class():
-	funcs = {u'公司企业;公司企业':1,u'教育学校;大学':6,u'基础设施;交通设施':3,u'购物;综合商场':4,u'房产小区;住宅区':2,u'美食':5}
-	f = codecs.open('fre_ap.txt',encoding='UTF-8')
-	out = codecs.open('4class_test/cid2gps.txt','w',encoding='UTF-8')
-	out2 = codecs.open('4class_test/bssid2cid.txt','w',encoding='UTF-8')
+	funcs = {u'公司企业;公司企业':1,u'旅游景点;公园':4,u'基础设施;交通设施':6,u'公司企业;农林牧渔基地':2,u'房产小区;住宅区':3,u'美食':5}
+	#funcs = {u'旅游景点;公园':4,u'基础设施;交通设施':6,u'公司企业;农林牧渔基地':2}
+	f = codecs.open('manual_pic/fre_ap.txt',encoding='UTF-8')
+	#f = codecs.open('../poi_beijing_s',encoding='UTF-8')
+	out = codecs.open('manual_pic/cid2gps.txt','w',encoding='UTF-8')
+	out2 = codecs.open('manual_pic/bssid2cid.txt','w',encoding='UTF-8')
 	for line in f:
 		words = line[:-1].split('|')
 		bssid = words[1]
@@ -48,5 +50,5 @@ def select_4_class():
 	out2.close()
 
 if __name__ == '__main__':
-	select_fre_ap()
+	#select_fre_ap()
 	select_4_class()

@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import codecs
+import codecs, os
 
 plt.rcParams['figure.figsize'] = (10, 10)        # large images
 plt.rcParams['image.interpolation'] = 'nearest'  # don't interpolate: show square pixels
@@ -37,58 +37,55 @@ transformer.set_mean('data', mu)            # subtract the dataset-mean value in
 transformer.set_raw_scale('data', 255)      # rescale from [0, 1] to [0, 255]
 transformer.set_channel_swap('data', (2,1,0))  # swap channels from RGB to BGR
 
-f = codecs.open('cid2gps.txt',encoding='UTF-8')
-filenames = []
-for line in f:
-	words=line.split(' ')
-	if words[0].split('_')[0]!='16':
-		filenames.append(words[0])
-f.close()
-filenames = sorted(filenames)
-l = len(filenames)
 fdic = {'1':1,'2':2,'13':3,'18':4,'21':5,'7':6}
 #out = codecs.open('only_caffe.txt','w',encoding='UTF-8')
 out2 = codecs.open('only_caffe_mid.txt','w',encoding='UTF-8')
 #out3 = codecs.open('only_caffe_mean.txt','w',encoding='UTF-8')
-bad = codecs.open('bad_points.txt','w',encoding='UTF-8')
-for i in range(l):
-	print i, filenames[i]
-	image = ''
-	try:
-		image = caffe.io.load_image('../../imgs/7class/%s.png'%filenames[i])
-	except:
-		bad.write('%s\n'%filenames[i])
-		continue
-	#transformed_image = transformer.preprocess('data', image)
-	#net.blobs['data'].data[...] = transformed_image
-	in_oversampled = caffe.io.oversample([image],(227,227))
-	caffe_input = np.asarray([transformer.preprocess('data',_in) for _in in in_oversampled])
-	#print caffe_input.shape
-	#print caffe_input[0], caffe_input[1]
-	#print net.blobs['data'].data[0][0], net.blobs['data'].data[1][0]
-	output = net.forward(data=caffe_input)
-	#output = net.forward()
-	output_prob = output['prob'][0]  # the output probability vector for the first image in the batch
-	#out3.write('%d'%(fdic[filenames[i].split('_')[0]]))
-	s_fe = [0 for kk in range(4096)]
-	for j in range(10):
-		feature = net.blobs['fc6'].data[j]
-		if j ==4:
-			out2.write('%d'%(fdic[filenames[i].split('_')[0]]))
-		#out.write('%d'%(fdic[filenames[i].split('_')[0]]))
-		count = 0
-		for fe in feature:
-			s_fe[count]=s_fe[count]+fe
-			count=count+1
-			if j == 4:
-				out2.write(' %d:%f'%(count,fe))
-			#out.write(' %d:%f'%(count,fe))
-		#out.write('\n')
-	#for kk in range(4096):
-	#	out3.write(' %d:%f'%(kk+1,s_fe[kk]/10))
-	out2.write('\n')
-	#out3.write('\n')
-	#break
+fndic={}
+shunxu = [3,4,1,5,2,6]
+for i in shunxu:
+	print i
+	for root, dirs, files in os.walk('/home/srt/yc/workspace/imgs/6class/%d'%(i)):
+		for f in files:
+			pos = 4
+			if i%2==0:
+				f_tmp=f[:19]
+				if fndic.has_key(f_tmp):
+					pos=fndic[f_tmp]
+					fndic[f_tmp]=fndic[f_tmp]+1
+				else:
+					pos=0
+					fndic[f_tmp]=1
+			image = caffe.io.load_image('/home/srt/yc/workspace/imgs/6class/%d/%s'%(i,f))
+			#transformed_image = transformer.preprocess('data', image)
+			#net.blobs['data'].data[...] = transformed_image
+			in_oversampled = caffe.io.oversample([image],(227,227))
+			caffe_input = np.asarray([transformer.preprocess('data',_in) for _in in in_oversampled])
+			#print caffe_input.shape
+			#print caffe_input[0], caffe_input[1]
+			#print net.blobs['data'].data[0][0], net.blobs['data'].data[1][0]
+			output = net.forward(data=caffe_input)
+			#output = net.forward()
+			output_prob = output['prob'][0]  # the output probability vector for the first image in the batch
+			#out3.write('%d'%(fdic[filenames[i].split('_')[0]]))
+			s_fe = [0 for kk in range(4096)]
+			out2.write('%d'%(i))
+			for j in range(10):
+				feature = net.blobs['fc6'].data[j]
+				#out.write('%d'%(fdic[filenames[i].split('_')[0]]))
+				count = 0
+				for fe in feature:
+					s_fe[count]=s_fe[count]+fe
+					count=count+1
+					if j == pos:
+						out2.write(' %d:%f'%(count,fe))
+					#out.write(' %d:%f'%(count,fe))
+				#out.write('\n')
+			#for kk in range(4096):
+			#	out3.write(' %d:%f'%(kk+1,s_fe[kk]/10))
+			out2.write('\n')
+			#out3.write('\n')
+			#break
 #out.close()
 out2.close()
 

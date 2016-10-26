@@ -2,7 +2,7 @@ import random,math
 
 def mix():
 	f1 = open('only_wifi.txt')
-	f2 = open('only_caffe_mean.txt')
+	f2 = open('../manual_pic/only_caffe_mid.txt')
 	dic = []
 	for line in f1:
 		dic.append(line[:-1])
@@ -18,7 +18,7 @@ def mix():
 		count=count+1
 	f1.close()
 	f2.close()
-	out = open('mixed.txt','w')
+	out = open('../manual_pic/mixed.txt','w')
 	for d in dic:
 		out.write(d+'\n')
 	out.close()

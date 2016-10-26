@@ -44,7 +44,7 @@ def gen_mergeclass_label():
 
 def select_ap():
 	dic = {}
-	fdic = {'1':1,'2':2,'7':3,'13':4,'16':5,'18':6,'21':7}
+	fdic = {'1':1,'2':2,'7':6,'13':3,'18':4,'21':5}
 	f = codecs.open('../data_beijing',encoding='UTF-8')
 	for line in f:
 		words = line[:-1].split('|')
@@ -66,7 +66,7 @@ def select_ap():
 	out.close()
 
 def cluster_alg(dic, name):#dic[i]:[bssid, No., lon, lat, times, p, deta, cluster_id...]
-	fdic = {'1':'办公','2':'农业','7':'机场','13':'住宅','16':'大学','18':'公园','21':'餐厅'}
+	fdic = {'1':'办公','2':'农业','7':'机场','13':'住宅','18':'公园','21':'餐厅'}
 	print 'processing ',fdic[name]
 	l = len(dic)
 	print 'N = %d'%l
@@ -110,7 +110,7 @@ def cluster_alg(dic, name):#dic[i]:[bssid, No., lon, lat, times, p, deta, cluste
 	out.close()
 
 def clustering():
-	dic = {'1':[],'2':[],'7':[],'13':[],'16':[],'18':[],'21':[]}
+	dic = {'1':[],'2':[],'7':[],'13':[],'18':[],'21':[]}
 	f = codecs.open('../poi_selected',encoding='UTF-8')
 	for line in f:
 		words = line[:-1].split('|')
@@ -132,11 +132,11 @@ def clustering():
 		cluster_alg(_input, key)
 
 def gen_center():
-	fdic = {'1':9999,'2':2937,'13':9999,'16':9999,'18':5095,'21':4086,'7':1840}
+	fdic = {'1':9999,'2':2937,'13':9999,'18':5089,'21':4086,'7':1840}
 	threshold = 0.01
 	rate = 1
-	out = codecs.open('result/bssid2cid.txt','w',encoding='UTF-8')
-	gps = codecs.open('result/cid2gps.txt','w',encoding='UTF-8')
+	out = codecs.open('7class_test/bssid2cid.txt','w',encoding='UTF-8')
+	gps = codecs.open('7class_test/cid2gps.txt','w',encoding='UTF-8')
 	for key in fdic:
 		if key=='7':
 			threshold = 0.0015
