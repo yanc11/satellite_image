@@ -60,17 +60,17 @@ def get_features(path):
 			udic[uid]['lasttime']=ts
 	f.close()
 	bad_points={}
-	f=codecs.open(path+'bad_points.txt',encoding='UTF-8')
-	for line in f:
-		bad_points[line[:-1]]=''
-	f.close()
+	#f=codecs.open(path+'bad_points.txt',encoding='UTF-8')
+	#for line in f:
+	#	bad_points[line[:-1]]=''
+	#f.close()
 	for cid in sorted(cluster.keys()):
 		if bad_points.has_key(cid):
 			continue
-		if not fdic.has_key(cid.split('_')[0]):
-			continue
-		out.write('%d'%(fdic[cid.split('_')[0]]))#need_modify
-		#out.write(cid.split('_')[0])
+		#if not fdic.has_key(cid.split('_')[0]):
+		#	continue
+		#out.write('%d'%(fdic[cid.split('_')[0]]))#need_modify
+		out.write(cid.split('_')[0])
 		fe_c=1
 		s=sum(cluster[cid]['conperhour'])
 		for fe in cluster[cid]['conperhour']:
@@ -159,4 +159,4 @@ def get_features(path):
 	out.close()
 
 if __name__ == '__main__':
-	get_features('7class_test/')
+	get_features('mix_func/multi/')

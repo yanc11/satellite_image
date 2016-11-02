@@ -16,8 +16,11 @@ def bdt_test(xj,yj):
     print "Score : "+str(bdt.score(X_test_m,y_test_m, sample_weight=None))
     expected = y_test_m
     predicted = bdt.predict(X_test_m)
-    print("Classification report for classifier %s:\n%s\n"
-          % (bdt, metrics.classification_report(expected, predicted)))
+    proba = bdt.predict_proba(X_test_m)
+    #print expected
+    #print predicted
+    #print proba
+    print("Classification report for classifier %s:\n%s\n" % (bdt, metrics.classification_report(expected, predicted)))
     print("Confusion matrix:\n%s" % metrics.confusion_matrix(expected, predicted))
 
 def svm_test(xj,yj):
@@ -33,8 +36,8 @@ def svm_test(xj,yj):
     print("Confusion matrix:\n%s" % metrics.confusion_matrix(expected, predicted))
 
 if __name__ == '__main__':
-    #xj,yj = load_svmlight_file("only_wifi.txt")
-    #xj,yj = load_svmlight_file("../manual_pic/only_caffe_mid.txt")
-    xj,yj = load_svmlight_file("../manual_pic/mixed.txt")
-    bdt_test(xj,yj)
-    #svm_test(xj,yj)
+    xjs,yjs = load_svmlight_file("single/only_wifi.txt")
+    xjm,yjm = load_svmlight_file("multi/only_wifi.txt")
+    print yjs
+    print yjm
+    #bdt_test(xjs,yjs)
