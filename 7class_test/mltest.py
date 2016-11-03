@@ -35,6 +35,6 @@ def svm_test(xj,yj):
 if __name__ == '__main__':
     #xj,yj = load_svmlight_file("only_wifi.txt")
     #xj,yj = load_svmlight_file("../manual_pic/only_caffe_mid.txt")
-    xj,yj = load_svmlight_file("../manual_pic/mixed.txt")
+    xj,yj = load_svmlight_file("../mix_func/single/mixed.txt")
     bdt_test(xj,yj)
     #svm_test(xj,yj)

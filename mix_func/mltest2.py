@@ -68,7 +68,7 @@ def bdt_test(xj,yj,xjm,yjm):
 
 if __name__ == '__main__':
 	xjs,yjs = load_svmlight_file("single/only_caffe_mid.txt")
-	xjm,yjm = load_svmlight_file("only_caffe_mid_15_scale.txt")
+	xjm,yjm = load_svmlight_file("multi/only_caffe_mid_18.txt")
 	#print yjs
 	#print yjm
 	bdt_test(xjs,yjs,xjm,yjm)

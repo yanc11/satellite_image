@@ -73,5 +73,61 @@ def regen(path):
 	outs.close()
 	outm.close()
 
+def get_single_caffe():
+	f=codecs.open('../manual_pic/only_caffe_mid.txt',encoding='UTF-8')
+	dic={'1':[],'2':[],'3':[],'4':[],'5':[],'6':[]}
+	key_sorted=['3','4','1','5','2','6']
+	nums=[338,154,499,257,194,4]
+	nums2={'3':338,'4':154,'1':499,'5':257,'2':194,'6':4}
+	for line in f:
+		dic[line.split(' ')[0]].append(line)
+	f.close()
+	out=codecs.open('single/only_caffe_mid.txt','w',encoding='UTF-8')
+	for i in range(6):
+		for j in range(nums[i]):
+			out.write(dic[key_sorted[i]][j])
+	out.close()
+	f=codecs.open('multi/cid2gps.txt',encoding='UTF-8')
+	cidfunc={}
+	fdic={'1':1,'2':2,'13':3,'18':4,'21':5,'7':6}
+	for line in f:
+		words=line[:-1].split(' ')[0].split('_')
+		gt=[]
+		for i in range(len(words)-1):
+			gt.append(fdic[words[i+1]])
+		cidfunc[words[0]]=gt
+	out=codecs.open('multi/only_caffe_mid.txt','w',encoding='UTF-8')
+	for i in range(200):
+		classid=str(cidfunc[str(i+1)][0])
+		out.write(str(i+1)+dic[classid][nums2[classid]][1:])
+		nums2[classid]=nums2[classid]+1
+	out.close()
+
+def mix():
+	f1 = open('multi/only_wifi.txt')
+	f2 = open('only_caffe_mid_17.txt')
+	dic = []
+	for line in f1:
+		dic.append(line[:-1])
+	count = 0
+	for line in f2:
+		words = line[:-1].split(' ')
+		first = True
+		for w in words:
+			if first:
+				first = False
+				continue
+			dic[count]=dic[count]+' %d:%f'%(int(w.split(':')[0])+39,float(w.split(':')[1]))
+		count=count+1
+	f1.close()
+	f2.close()
+	out = open('multi/mixed_17.txt','w')
+	for d in dic:
+		out.write(d+'\n')
+	out.close()
+	return
+
 if __name__ == '__main__':
-	regen('../7class_test/')
+	#regen('../7class_test/')
+	#get_single_caffe()
+	mix()

@@ -64,7 +64,7 @@ def get_features(path):
 	#for line in f:
 	#	bad_points[line[:-1]]=''
 	#f.close()
-	for cid in sorted(cluster.keys()):
+	for cid in sorted(cluster.keys(),key=lambda kk:int(kk.split('_')[0])):
 		if bad_points.has_key(cid):
 			continue
 		#if not fdic.has_key(cid.split('_')[0]):
