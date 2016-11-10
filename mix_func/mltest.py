@@ -45,6 +45,7 @@ def bdt_test(xj,yj,xjm,yjm):
 	predicted = bdt.predict(xjm)
 	proba = bdt.predict_proba(xjm)
 	dic={}
+	ttmp=[0,0,0]
 	for i in range(len(yjm)):
 		cid=str(int(yjm[i]))
 		p6=proba[i]
@@ -58,6 +59,8 @@ def bdt_test(xj,yj,xjm,yjm):
 				break
 			resulti.append(pdic[j][0])
 		dic[cid]=resulti
+		ttmp[len(resulti)-1]=ttmp[len(resulti)-1]+1
+	print ttmp
 	judge(dic)
 	#print expected
 	#print predicted
@@ -68,7 +71,7 @@ def bdt_test(xj,yj,xjm,yjm):
 
 if __name__ == '__main__':
 	xjs,yjs = load_svmlight_file("single/only_caffe_mid.txt")
-	xjm,yjm = load_svmlight_file("only_caffe_mid_15_scale.txt")
+	xjm,yjm = load_svmlight_file("multi/only_caffe_mid_18.txt")
 	#print yjs
 	#print yjm
 	bdt_test(xjs,yjs,xjm,yjm)
