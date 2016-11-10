@@ -18,7 +18,7 @@ def judge(dic):
 		gt=[]
 		for i in range(len(words)-1):
 			gt.append(fdic[words[i+1]])
-		pred=dic[words[0]]
+		pred=dic[int(words[0])-1]
 		accnum=0
 		tmp=[0,0,0]
 		for i in range(len(pred)):
@@ -43,11 +43,18 @@ def bdt_test(xj,yj,xjm,yjm):
 	#print "Score : "+str(bdt.score(X_test_m,y_test_m, sample_weight=None))
 	#expected = y_test_m
 	predicted = bdt.predict(xjm)
-	proba = bdt.predict_proba(xjm)
-	dic={}
+	#proba = bdt.predict_proba(xjm)
+	dic=[[0 for i in range(6)] for j in range(200)]
 	for i in range(len(yjm)):
-		cid=str(int(yjm[i]))
-		p6=proba[i]
+		cid=int(yjm[i])-1
+		dic[cid][int(predicted[i])-1]+=1
+	_dic=[]
+	ttmp=[0,0,0]
+	for i in range(len(dic)):
+		s=sum(dic[i])
+		for j in range(6):
+			dic[i][j]=float(dic[i][j])/s
+		p6=dic[i]
 		pdic=[]
 		for j in range(6):
 			pdic.append([j+1,p6[j]])
@@ -57,8 +64,10 @@ def bdt_test(xj,yj,xjm,yjm):
 			if pdic[j][1]<0.1:
 				break
 			resulti.append(pdic[j][0])
-		dic[cid]=resulti
-	judge(dic)
+		ttmp[len(resulti)-1]=ttmp[len(resulti)-1]+1
+		_dic.append(resulti)
+	print ttmp
+	judge(_dic)
 	#print expected
 	#print predicted
 	#print proba
@@ -67,8 +76,8 @@ def bdt_test(xj,yj,xjm,yjm):
 
 
 if __name__ == '__main__':
-	xjs,yjs = load_svmlight_file("single/only_caffe_mid.txt")
-	xjm,yjm = load_svmlight_file("multi/only_caffe_mid_18.txt")
+	xjs,yjs = load_svmlight_file("single/only_wifi.txt")
+	xjm,yjm = load_svmlight_file("multi/only_wifi_ap.txt")
 	#print yjs
 	#print yjm
 	bdt_test(xjs,yjs,xjm,yjm)

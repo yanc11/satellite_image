@@ -5,21 +5,17 @@ def get_features(path):
 	start=1430582400#15-5-3
 	weekend={'0':0,'6':0,'7':0}
 	fdic={'1':1,'2':2,'13':3,'18':4,'21':5,'7':6}#need modify
-	out=codecs.open(path+'only_wifi.txt','w',encoding='UTF-8')
+	out=codecs.open(path+'only_wifi_ap.txt','w',encoding='UTF-8')
 	cluster,bssid2cid = {},{}
-	f=codecs.open(path+'cid2gps.txt',encoding='UTF-8')
-	for line in f:
-		words=line.split(' ')
-		cluster[words[0]] = {'conperhour':[0 for i in range(24)],'conperday':[0,0],'duration':[[],[]],'longstay':[0.0,0.0],'ulist':[],'lastd':-1}
-	f.close()
 	f=codecs.open(path+'bssid2cid.txt',encoding='UTF-8')
 	for line in f:
 		words=line[:-1].split(' ')
-		bssid2cid[words[0]]=words[1]
+		bssid2cid[words[0]]=words[1].split('_')[0]
+		cluster[words[0]] = {'conperhour':[0 for i in range(24)],'conperday':[0,0],'duration':[[],[]],'longstay':[0.0,0.0],'ulist':[],'lastd':-1}
 	f.close()
 	_c=0
 	udic={}
-	f=codecs.open('../data_beijing_modified_cluster',encoding='UTF-8')
+	f=codecs.open('../../../data_beijing_modified_cluster',encoding='UTF-8')
 	for line in f:
 		_c=_c+1
 		if _c%100000==0:
@@ -30,7 +26,7 @@ def get_features(path):
 			continue
 		if tid!='8':
 			dur=-1
-		cid=bssid2cid[bssid]
+		cid=bssid
 		hour=(ts-start)%(3600*24)/3600
 		day=(ts-start)/(3600*24)
 		daytype=0
@@ -64,13 +60,13 @@ def get_features(path):
 	#for line in f:
 	#	bad_points[line[:-1]]=''
 	#f.close()
-	for cid in sorted(cluster.keys(),key=lambda kk:int(kk.split('_')[0])):
+	for cid in sorted(cluster.keys(),key=lambda kk:int(bssid2cid[kk])):
 		if bad_points.has_key(cid):
 			continue
 		#if not fdic.has_key(cid.split('_')[0]):
 		#	continue
 		#out.write('%d'%(fdic[cid.split('_')[0]]))#need_modify
-		out.write(cid.split('_')[0])
+		out.write(bssid2cid[cid])
 		fe_c=1
 		s=sum(cluster[cid]['conperhour'])
 		for fe in cluster[cid]['conperhour']:
@@ -159,4 +155,4 @@ def get_features(path):
 	out.close()
 
 if __name__ == '__main__':
-	get_features('mix_func/multi/')
+	get_features('./')
